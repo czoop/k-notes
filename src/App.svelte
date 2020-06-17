@@ -1,15 +1,8 @@
 <script>
-  import AppBar from "./components/AppBar.svelte"
-  import Page from "./components/Page.svelte"
   import DocumentEditor from "./components/DocumentEditor.svelte"
 </script>
 
 <style>
-  @font-face {
-    font-family: "CM Roman Serif";
-    src: url("/fonts/cmunrm.ttf");
-  }
-
   main {
     display: flex;
     justify-content: center;
