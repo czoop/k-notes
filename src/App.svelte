@@ -8,7 +8,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    font-family: "CM Roman Serif";
+    font-family: "CMU Serif Roman";
   }
 
   :global(body) {
