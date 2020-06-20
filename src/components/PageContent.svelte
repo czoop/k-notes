@@ -6,31 +6,30 @@
     { classes: ["bold"], text: "BOLD!", el: null },
   ]
 
-  $: console.log(content)
-
   async function handleKeydown(event) {
     let selection = window.getSelection()
     let range = selection.getRangeAt(0)
-    let container = range.startContainer
+    let startContainer = range.startContainer
 
-    console.log(container)
+    let selectionContents = range.cloneContents()
+    let extractContents = range.extractContents()
+    console.log(
+      extractContents,
+      selectionContents,
+      extractContents === selectionContents
+    )
+    range.deleteContents()
 
-    // Find the matching object
-    let part = content.filter((p) => range.intersectsNode(p.el))
-    console.log(part)
+    console.log(extractContents, selectionContents)
 
-    let start = range.startOffset
-    let end = range.endOffset
-    // console.log(container, start, end)
-
-    // Restore the ranges
-    // await tick()
-    // let text_node = this.childNodes[0]
-    // selection.removeAllRanges()
-    // let new_range = document.createRange()
-    // new_range.setStart(text_node, 0)
-    // new_range.setEnd(text_node, 5)
-    // selection.addRange(new_range)
+    // Insert the clone as a new text block and then select it
+    let startBlockIndex = content.findIndex((p) => p.el === startContainer)
+    content.splice(startBlockIndex, 0, {
+      classes: ["bold"],
+      text: selectionContents.textContent,
+      el: null,
+    })
+    content = content // For Svelte
   }
 </script>
 

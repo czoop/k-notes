@@ -1,5 +1,5 @@
 <script>
-  let title = "OK Notes"
+  let title = "K Notes"
 </script>
 
 <style>
