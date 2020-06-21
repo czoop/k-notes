@@ -6,29 +6,34 @@
 
     $: console.log(content)
 
-    async function handleInput(event) {
-        if (parentEl !== null) {
-            for (let i = 0; i < parentEl.childNodes.length; i++) {
-                content[i] = parentEl.childNodes[i]
-            }
-        }
-    }
-
     // async function handleInput(event) {
     //     if (parentEl !== null) {
-    //         let children = parentEl.childNodes
-    //         console.log("children", children)
-
-    //         for (let i = 0; i < children.length; i++) {
-    //             let subChildren = children[i].childNodes
-    //             console.log("subchildren", subChildren)
-    //             for (let j = 0; j < subChildren.length; j++) {
-    //                 content[i].subChildren[j] = subChildren[j].textContent
-    //             }
+    //         for (let i = 0; i < parentEl.childNodes.length; i++) {
+    //             content[i] = parentEl.childNodes[i]
     //         }
-    //         console.log(content)
     //     }
     // }
+
+    async function handleInput(event) {
+        if (parentEl !== null) {
+            let children = parentEl.childNodes
+            console.log("children", children)
+
+            for (let i = 0; i < children.length; i++) {
+                let subChildren = children[i].childNodes
+                console.log("subchildren", subChildren)
+
+                if (!content[i]) {
+                    content[i] = { subChildren: [] }
+                }
+
+                for (let j = 0; j < subChildren.length; j++) {
+                    content[i].subChildren[j] = subChildren[j].textContent
+                }
+            }
+            console.log(content)
+        }
+    }
 
     // async function handleKeydown(event) {
     //     if (event.key !== "b") return
