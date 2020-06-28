@@ -1,5 +1,5 @@
 <script>
-    import { tick, onDestroy } from "svelte"
+    import { tick, onDestroy, onMount } from "svelte"
 
     let content = [{ text: "Hello" }, { text: "World" }]
     let selecting = false
@@ -16,13 +16,44 @@
         document.removeEventListener("selectionchange", handleSelectionChange)
     })
 
+    onMount(() => {
+        // Insert any saved text
+        for (let i = 0; i < content.length; i++) {
+            let child = document.createElement("div")
+            child.textContent = content[i].text
+            parentEl.appendChild(child)
+        }
+    })
+
     /** @param {Event} event */
     async function handleInput(event) {
-        // console.log(content)
+        let children = parentEl.children
+        let new_content = []
+
+        // Rare case - When there's only one line of text
+        if (
+            Array.prototype.findIndex.call(
+                children,
+                c => c instanceof HTMLDivElement
+            ) === -1
+        ) {
+            children = parentEl.childNodes
+        }
+
+        for (let i = 0; i < children.length; i++) {
+            let child = children[i]
+            new_content[i] = { ...content[i], text: child.textContent }
+        }
+
+        content = new_content
     }
 
     async function handleKeydown(event) {
         console.log(event.key)
+
+        // if (event.key === "Enter") {
+        //     event.preventDefault()
+        // }
 
         // if (selecting && event.key === "Backspace") {
         //     event.preventDefault()
@@ -64,13 +95,6 @@
 <div
     bind:this={parentEl}
     class="parent"
-    contenteditable={selecting ? 'true' : 'false'}
-    on:selectstart={selectStart}>
-    {#each content as { text }, i (i)}
-        <div
-            contenteditable="true"
-            on:input|preventDefault={handleInput}
-            on:keydown={handleKeydown}
-            bind:textContent={text} />
-    {/each}
-</div>
+    contenteditable="true"
+    on:input={handleInput}
+    on:selectstart={selectStart} />
