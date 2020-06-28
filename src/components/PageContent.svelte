@@ -1,72 +1,48 @@
 <script>
-    import { tick } from "svelte"
+    import { tick, onDestroy } from "svelte"
 
-    let content = [{ subChildren: [{ text: "Hello", classes: ["bold"] }] }]
+    let content = [{ text: "Hello" }, { text: "World" }]
+    let selecting = false
 
     /** @type {HTMLDivElement} */
     let parentEl = null
 
     $: console.log("content", content)
+    $: console.log("selecting", selecting)
+
+    document.addEventListener("selectionchange", handleSelectionChange)
+
+    onDestroy(() => {
+        document.removeEventListener("selectionchange", handleSelectionChange)
+    })
 
     /** @param {Event} event */
     async function handleInput(event) {
-        await tick()
-
-        if (parentEl === null) {
-            return
-        }
-
-        let children = parentEl.children
-        console.log("children", children)
-
-        let selection = window.getSelection()
-        let node = selection.anchorNode
-
-        if (node instanceof Text) {
-            node = node.parentElement.parentElement
-        }
-
-        let node_index = Array.prototype.indexOf.call(children, node)
-        console.log("node", node_index, node)
-
-        // Let's just update content[node_index]
-        content[node_index] = {
-            subChildren: [
-                {
-                    text: parentEl.children[node_index].textContent,
-                    classes: parentEl.children[node_index].classList,
-                },
-            ],
-        }
-
-        // for (let i = 0; i < children.length; i++) {
-        //     let child = children[i]
-        //     content[i] = {
-        //         subChildren: [
-        //             { text: child.textContent, classes: child.classList },
-        //         ],
-        //     }
-        // }
+        // console.log(content)
     }
 
     async function handleKeydown(event) {
-        return
-        if (event.key !== "b") return
-        event.preventDefault
-
         console.log(event.key)
 
+        // if (selecting && event.key === "Backspace") {
+        //     event.preventDefault()
+        //     let selection = window.getSelection()
+        //     let range = selection.getRangeAt(0)
+        //     range.deleteContents()
+        //     console.log("Content Deleted")
+        // }
+    }
+
+    async function handleSelectionChange(event) {
         let selection = window.getSelection()
-        let range = selection.getRangeAt(0)
-        let startContainer = range.startContainer
-        let startOffset = range.startOffset
-        let endContainer = range.endContainer
-        let endOffset = range.endOffset
+        if (selection.isCollapsed) {
+            selecting = false
+        }
+    }
 
-        let selectionContents = range.extractContents()
-        console.log(selectionContents)
-
-        selectionContents.classList.add("bold")
+    async function selectStart(event) {
+        console.log("select event")
+        selecting = true
     }
 </script>
 
@@ -88,14 +64,13 @@
 <div
     bind:this={parentEl}
     class="parent"
-    contenteditable="true"
-    on:keydown={handleKeydown}
-    on:input={handleInput}>
-    {#each content as { subChildren }, j (j)}
-        <div>
-            {#each subChildren as part, i (i)}
-                <span class={part.classes}>{part.text}</span>
-            {/each}
-        </div>
+    contenteditable={selecting ? 'true' : 'false'}
+    on:selectstart={selectStart}>
+    {#each content as { text }, i (i)}
+        <div
+            contenteditable="true"
+            on:input|preventDefault={handleInput}
+            on:keydown={handleKeydown}
+            bind:textContent={text} />
     {/each}
 </div>
