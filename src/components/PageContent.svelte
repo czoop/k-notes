@@ -1,10 +1,12 @@
 <script>
     import { tick } from "svelte"
 
-    let content = []
+    let content = [{ subChildren: [{ text: "Hello", classes: ["bold"] }] }]
+
+    /** @type HTMLDivElement */
     let parentEl = null
 
-    $: console.log(content)
+    $: console.log("content", content)
 
     // async function handleInput(event) {
     //     if (parentEl !== null) {
@@ -14,25 +16,61 @@
     //     }
     // }
 
+    // async function handleInput(event) {
+    //     await tick()
+
+    //     if (parentEl !== null) {
+    //         let children = parentEl.childNodes
+    //         console.log("children", children)
+
+    //         for (let i = 0; i < children.length; i++) {
+    //             let subChildren = children[i].childNodes
+    //             console.log("subchildren", subChildren)
+
+    //             if (!content[i]) {
+    //                 // content[i] = { subChildren: [] }
+    //             }
+
+    //             for (let j = 0; j < subChildren.length; j++) {
+    //                 // content[i].subChildren[j] = {
+    //                 //     text: subChildren[j].textContent,
+    //                 //     classes: subChildren[j].classList,
+    //                 // }
+    //             }
+    //         }
+    //     }
+    // }
+
     async function handleInput(event) {
-        if (parentEl !== null) {
-            let children = parentEl.childNodes
-            console.log("children", children)
+        await tick()
 
-            for (let i = 0; i < children.length; i++) {
-                let subChildren = children[i].childNodes
-                console.log("subchildren", subChildren)
-
-                if (!content[i]) {
-                    content[i] = { subChildren: [] }
-                }
-
-                for (let j = 0; j < subChildren.length; j++) {
-                    content[i].subChildren[j] = subChildren[j].textContent
-                }
-            }
-            console.log(content)
+        if (parentEl === null) {
+            return
         }
+
+        console.log("children", parentEl.children)
+        let children = parentEl.children
+
+        for (let i = 0; i < children.length; i++) {}
+    }
+
+    async function handleKeydown(event) {
+        if (event.key !== "b") return
+        event.preventDefault
+
+        console.log(event.key)
+
+        let selection = window.getSelection()
+        let range = selection.getRangeAt(0)
+        let startContainer = range.startContainer
+        let startOffset = range.startOffset
+        let endContainer = range.endContainer
+        let endOffset = range.endOffset
+
+        let selectionContents = range.extractContents()
+        console.log(selectionContents)
+
+        selectionContents.classList.add("bold")
     }
 
     // async function handleKeydown(event) {
@@ -92,6 +130,7 @@
     div {
         font-size: 1.5rem;
         outline: none;
+        overflow-wrap: break-word;
     }
 
     .parent {
@@ -103,6 +142,14 @@
     }
 </style>
 
-<div bind:this={parentEl} contenteditable="true" on:input={handleInput}>
-    <br />
+<div
+    bind:this={parentEl}
+    contenteditable="true"
+    on:input={handleInput}
+    on:keydown={handleKeydown}>
+    {#each content as { subChildren }, line_number (line_number)}
+        {#each subChildren as part, index (index)}
+            <div class={part.classes}>{part.text}</div>
+        {/each}
+    {/each}
 </div>
