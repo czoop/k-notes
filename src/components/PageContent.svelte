@@ -1,27 +1,39 @@
 <script>
     import { tick, onDestroy, onMount } from "svelte"
+    import findIndex from "lodash/findIndex"
+    import lodash_range from "lodash/range"
 
-    let content = [{ text: "Hello" }, { text: "World" }]
-    let selecting = false
+    // *** VARIABLES ***
+    let content = [
+        {
+            parts: [
+                { text: "Hello", classes: [] },
+                { text: " Hello2", classes: [] },
+            ],
+        },
+        { parts: [{ text: "World", classes: [] }] },
+    ]
 
     /** @type {HTMLDivElement} */
     let parentEl = null
 
+    // *** LOGS ***
     $: console.log("content", content)
-    $: console.log("selecting", selecting)
 
-    document.addEventListener("selectionchange", handleSelectionChange)
+    // *** FUNCTIONS ***
 
-    onDestroy(() => {
-        document.removeEventListener("selectionchange", handleSelectionChange)
-    })
-
+    /** Handles populating the information when the page is first created */
     onMount(() => {
         // Insert any saved text
         for (let i = 0; i < content.length; i++) {
-            let child = document.createElement("div")
-            child.textContent = content[i].text
-            parentEl.appendChild(child)
+            let div = document.createElement("div")
+            for (let j = 0; j < content[i].parts.length; j++) {
+                let span = document.createElement("span")
+                span.textContent = content[i].parts[j].text
+                span.classList = content[i].parts[j].classes
+                div.appendChild(span)
+            }
+            parentEl.appendChild(div)
         }
     })
 
@@ -40,40 +52,47 @@
             children = parentEl.childNodes
         }
 
+        // Go through the child divs and populate content with the info
         for (let i = 0; i < children.length; i++) {
-            let child = children[i]
-            new_content[i] = { ...content[i], text: child.textContent }
+            let div = children[i]
+            for (let j = 0; j < div.children.length; j++) {
+                let span = children[i].children[j]
+                new_content[i] = {
+                    parts: [
+                        { text: span.textContent, classes: span.classList },
+                    ],
+                }
+            }
         }
 
         content = new_content
     }
 
-    async function handleKeydown(event) {
-        console.log(event.key)
+    /** @param {KeyboardEvent} event */
+    function handleKeydown(event) {
+        if (event.key === "b") {
+            let selection = window.getSelection()
 
-        // if (event.key === "Enter") {
-        //     event.preventDefault()
-        // }
+            if (selection.isCollapsed) {
+                return
+            }
 
-        // if (selecting && event.key === "Backspace") {
-        //     event.preventDefault()
-        //     let selection = window.getSelection()
-        //     let range = selection.getRangeAt(0)
-        //     range.deleteContents()
-        //     console.log("Content Deleted")
-        // }
-    }
+            event.preventDefault()
 
-    async function handleSelectionChange(event) {
-        let selection = window.getSelection()
-        if (selection.isCollapsed) {
-            selecting = false
+            let range = selection.getRangeAt(0)
+            let children = parentEl.children
+            console.log(children, range.startContainer, range.endContainer)
+            let startDiv = range.startContainer.parentElement
+            let endDiv = range.endContainer.parentElement
+            let startDivIndex = findIndex(children, c => c === startDiv)
+            let endDivIndex = findIndex(children, c => c === endDiv)
+            console.log(startDivIndex, endDivIndex)
+
+            let indexesInBetween = lodash_range(startDivIndex + 1, endDivIndex)
+
+            let extract = range.extractContents()
+            console.log(extract)
         }
-    }
-
-    async function selectStart(event) {
-        console.log("select event")
-        selecting = true
     }
 </script>
 
@@ -97,4 +116,4 @@
     class="parent"
     contenteditable="true"
     on:input={handleInput}
-    on:selectstart={selectStart} />
+    on:keydown={handleKeydown} />

@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "ionicons": "^5.0.1",
+    "lodash": "^4.17.15",
     "sirv-cli": "^0.4.4"
   }
 }
