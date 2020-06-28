@@ -1,6 +1,6 @@
 <script>
     import { tick, onDestroy, onMount } from "svelte"
-    import { h1, h2, h3, h4, h5, h6, span } from "./TypeMappings"
+    import { h1, h2, h3, h4, h5, h6, span, p } from "./TypeMappings"
 
     let content = [
         { text: "Heading 1", type: "h1" },
@@ -12,6 +12,16 @@
         { text: "Normal text ", type: "span" },
         { text: "Bold text ", type: "span", classes: ["bold"] },
         { text: "Italic text", type: "span", classes: ["italics"] },
+        {
+            text:
+                "This is a long long long long long long long long long long long long long long long sentence",
+            type: "span",
+            classes: [],
+        },
+        {
+            text: "This is a new line",
+            type: "p",
+        },
     ]
 </script>
 
@@ -37,6 +47,8 @@
     {#each content as { text, type, classes }}
         {#if type === span}
             <span class={classes}>{text}</span>
+        {:else if type === p}
+            <p>{text}</p>
         {:else if type === h1}
             <h1>{text}</h1>
         {:else if type === h2}
@@ -49,6 +61,8 @@
             <h5>{text}</h5>
         {:else if type === h6}
             <h6>{text}</h6>
+        {:else if text}
+            <span>{text}</span>
         {/if}
     {/each}
 </div>
