@@ -1,7 +1,13 @@
 <script>
-  import AppBar from "./AppBar.svelte"
-  import Page from "./Page.svelte"
+    import Editor from "./Editor.svelte"
+    import SideBySide from "./SideBySide.svelte"
+
+    import AppBar from "./AppBar.svelte"
+    import Page from "./Page.svelte"
 </script>
 
 <AppBar />
-<Page />
+<SideBySide>
+    <Editor />
+    <Page />
+</SideBySide>

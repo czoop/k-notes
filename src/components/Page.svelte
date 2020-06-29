@@ -1,18 +1,35 @@
 <script>
-  import { width_px, height_px, page_padding_px } from "./ZoomController"
-  import PageContent from "./PageContent.svelte"
+    import PageContent from "./PageContent.svelte"
+
+    let pageEl = null
+    let pageWidthPx = 85
+    let pagePaddingPx = 10
+
+    let pageRatio = 8.5 / 11
+
+    $: pagePaddingPx = pageWidthPx / 8.5
+    $: console.log(pagePaddingPx)
+
+    $: if (pageEl !== null) {
+        pageWidthPx = pageEl.clientWidth
+    }
 </script>
 
 <style>
-  div {
-    margin: 3rem 5rem;
-    background-color: #ffffff;
-    box-shadow: 0px 3px 5px -3px rgba(0, 0, 0, 0.5);
-  }
+    div {
+        width: 100%;
+        height: 100%;
+        padding: 0rem 1rem;
+    }
+
+    .page {
+        background-color: #ffffff;
+        box-shadow: 0px 3px 5px -3px rgba(0, 0, 0, 0.5);
+    }
 </style>
 
-<input type="number" bind:value={$width_px} />
-<div
-  style="width: {$width_px}px; height: {$height_px}px; padding: {$page_padding_px}px">
-  <PageContent />
+<div>
+    <div class="page" bind:this={pageEl} style="padding: {pagePaddingPx}">
+        <PageContent />
+    </div>
 </div>
