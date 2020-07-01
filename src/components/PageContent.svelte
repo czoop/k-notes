@@ -1,5 +1,5 @@
 <script>
-    import { tick, onDestroy, onMount } from "svelte"
+    import {} from "svelte"
     import { h1, h2, h3, h4, h5, h6, span, p } from "./TypeMappings"
 
     let content = [
@@ -27,11 +27,7 @@
 
 <style>
     div {
-        /* outline: none; */
         overflow-wrap: break-word;
-    }
-
-    .parent {
     }
 
     .bold {

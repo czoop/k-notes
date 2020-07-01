@@ -7,7 +7,4 @@
 </script>
 
 <AppBar />
-<SideBySide>
-    <Editor />
-    <Page />
-</SideBySide>
+<SideBySide children={[Editor, Page]} />

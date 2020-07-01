@@ -1,18 +1,26 @@
+<script>
+    export let children = []
+</script>
+
 <style>
-    div {
-        height: 100%;
+    .parent {
         display: flex;
+        justify-content: space-evenly;
         align-items: flex-start;
-        justify-content: space-around;
+        margin: 1rem;
     }
 
-    div > * {
-        margin: 1rem;
-        width: 100%;
-        background-color: red;
+    .child {
+        margin: 0rem 0.5rem;
+        width: 50%;
+        height: 100%;
     }
 </style>
 
-<div>
-    <slot />
+<div class="parent">
+    {#each children as child}
+        <div class="child">
+            <svelte:component this={child} />
+        </div>
+    {/each}
 </div>
