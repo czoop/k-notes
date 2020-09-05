@@ -6,9 +6,11 @@
 
     let pageWidthPx = 0
     let pagePaddingPx = 0
+    let fontSizePx = 0
     let pageRatio = 8.5 / 11
 
     $: pagePaddingPx = pageWidthPx / 8.5
+    $: fontSizePx = pageWidthPx / 40
 
     // Calls handleWindowResize once the elements have been created
     onMount(handleWindowResize)
@@ -29,6 +31,9 @@
 </style>
 
 <svelte:window on:resize={handleWindowResize} />
-<div class="page" bind:this={pageEl} style="padding: {pagePaddingPx}px;">
+<div
+    class="page"
+    bind:this={pageEl}
+    style="padding: {pagePaddingPx}px; font-size: {fontSizePx}px">
     <PageContent />
 </div>

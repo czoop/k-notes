@@ -19,6 +19,10 @@
         width: 100%;
         height: 100%;
     }
+
+    :global(*) {
+        box-sizing: border-box;
+    }
 </style>
 
 <main>

@@ -1,8 +1,14 @@
-<script>
+<script lang="ts">
     import {} from "svelte"
     import { h1, h2, h3, h4, h5, h6, span, p } from "./TypeMappings"
 
-    let content = [
+    interface Content {
+        text: string
+        type: string
+        classes?: string[]
+    }
+
+    let content: Content[] = [
         { text: "Heading 1", type: "h1" },
         { text: "Heading 2", type: "h2" },
         { text: "Heading 3", type: "h3" },
@@ -57,8 +63,6 @@
             <h5>{text}</h5>
         {:else if type === h6}
             <h6>{text}</h6>
-        {:else if text}
-            <span>{text}</span>
-        {/if}
+        {:else if text}<span>{text}</span>{/if}
     {/each}
 </div>
